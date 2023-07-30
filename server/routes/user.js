@@ -6,9 +6,9 @@ const { User, Course } = require("../db");
 const router = express.Router();
 
 
-router.get('/', (res, req) => {
-	res.json({ message: 'User route' })
-})
+router.get('/', (req, res) => {
+	res.json({ message: 'Admin API' });
+});
 
 // USER ROUTES
 router.post('/signup', async (req, res) => {

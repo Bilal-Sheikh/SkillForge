@@ -5,9 +5,9 @@ const { Admin, Course } = require('../db');
 
 const router = express.Router();
 
-router.get('/', (res,req) => {
-	res.json({message: 'Admin route'})
-})
+router.get('/', (req, res) => {
+	res.json({ message: 'Admin API' });
+});
 
 // Admin routes
 router.post('/signup', async (req, res) => {
