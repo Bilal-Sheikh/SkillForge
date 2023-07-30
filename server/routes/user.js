@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 router.get('/', (req, res) => {
-	res.json({ message: 'Admin API' });
+	res.json({ message: 'User API' });
 });
 
 // USER ROUTES
