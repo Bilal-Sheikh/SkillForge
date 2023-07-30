@@ -1,0 +1,18 @@
+<svg id="visual" viewBox="0 0 1920 1080" width="1920" height="1080"
+    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+    <rect x="0" y="0" width="1920" height="1080" fill="#000000"></rect>
+    <g fill="none" stroke="#792a2a" stroke-width="16">
+        <circle r="150" cx="1578" cy="203"></circle>
+        <circle r="46" cx="1288" cy="748"></circle>
+        <circle r="101" cx="896" cy="677"></circle>
+        <circle r="54" cx="416" cy="759"></circle>
+        <circle r="84" cx="348" cy="196"></circle>
+        <circle r="106" cx="902" cy="265"></circle>
+        <circle r="100" cx="227" cy="499"></circle>
+        <circle r="50" cx="1712" cy="593"></circle>
+        <circle r="96" cx="1199" cy="358"></circle>
+        <circle r="46" cx="1562" cy="924"></circle>
+        <circle r="96" cx="613" cy="508"></circle>
+        <circle r="108" cx="151" cy="919"></circle>
+    </g>
+</svg>
