@@ -6,7 +6,7 @@ const { User, Course } = require("../db");
 const router = express.Router();
 
 
-router.post('/', (res, req) => {
+router.get('/', (res, req) => {
 	res.json({ message: 'User route' })
 })
 
