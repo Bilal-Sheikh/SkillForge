@@ -1,7 +1,13 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const { authenticateUserJwt, SECRET } = require("../middleware/auth");
-const { User, Course } = require("../db");
+const { User, Course, Payment } = require("../db");
+require('dotenv').config();
+
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
+const KEY_ID = process.env.RAZORPAY_API_KEY;
+const KEY_SECRET = process.env.RAZORPAY_API_SECRET
 
 const router = express.Router();
 
@@ -81,5 +87,50 @@ router.get('/purchasedCourses', authenticateUserJwt, async (req, res) => {
 	const user = await User.findOne({ email: req.user.email }).populate('purchasedCourses')
 	res.json({ purchasedCourses: user.purchasedCourses || [] });
 });
+
+router.post('/orders', authenticateUserJwt, (req, res) => {
+
+	const instance = new Razorpay({ key_id: KEY_ID, key_secret: KEY_SECRET, });
+	const options = {
+		amount: Number(req.body.amount * 100),  // amount in the smallest currency unit
+		currency: "INR",
+	};
+
+	instance.orders.create(options, function (err, order) {
+		if (err) {
+			res.status(500).json({ message: 'Server Err' });
+		} else {
+			res.json({ message: 'Order created', order: order })
+		}
+	});
+})
+
+router.post('/verify', authenticateUserJwt, async (req, res) => {
+
+	const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body.response
+	const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+	const expectedSignature = crypto
+		.createHmac("sha256", KEY_SECRET)
+		.update(body.toString())
+		.digest("hex");
+
+	const isAuthentic = expectedSignature === razorpay_signature;
+	if (isAuthentic) {
+
+		const payment = new Payment({ razorpay_order_id, razorpay_payment_id, razorpay_signature, email: req.user.email })
+		payment.save()
+
+		res.status(200).json({
+			message: "SIGN VALID",
+			paymentID: razorpay_payment_id,
+			orderID: razorpay_order_id
+		});
+	} else {
+		res.status(400).json({
+			message: "SIGN INVALID",
+		});
+	}
+})
 
 module.exports = router;

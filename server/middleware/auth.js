@@ -1,10 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 // console.log('Loaded environment variables:', process.env.SECRET);
-
-
 const SECRET = process.env.SECRET;
-
 
 //JWT Admin Auth
 const authenticateAdminJwt = (req, res, next) => {

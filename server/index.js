@@ -1,4 +1,3 @@
-const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -14,8 +13,8 @@ const port = process.env.PORT || 6010;
 app.use(express.json());
 
 app.use(cors({
-    credentials : true,
-    origin :  process.env.CLIENT_URL
+    credentials: true,
+    origin: process.env.CLIENT_URL
 }));
 
 app.use('/admin', adminRouter);

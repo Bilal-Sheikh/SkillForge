@@ -28,14 +28,22 @@ const courseSchema = new mongoose.Schema({
 	publishedBy: Array,
 })
 
+const paymentSchema = new mongoose.Schema({
+	razorpay_order_id : String,
+	razorpay_payment_id : String,
+	razorpay_signature : String,
+	email : String
+})
+
 //make models
 const Admin = mongoose.model('Admin', adminSchema);
 const User = mongoose.model('User', userSchema);
 const Course = mongoose.model('Course', courseSchema);
-
+const Payment = mongoose.model('Payment', paymentSchema);
 
 module.exports = {
 	Admin,
 	User,
-	Course
+	Course,
+	Payment
 }
