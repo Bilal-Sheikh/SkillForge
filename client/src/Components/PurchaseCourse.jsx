@@ -1,4 +1,4 @@
-import { Card, Typography, Button, } from "@mui/material";
+import { Typography, Button, } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
@@ -46,6 +46,68 @@ function PurchaseCourse() {
             })
         })
     }, [isPurchased])
+
+
+    const handlePaymentSuccess = async (data) => {
+        const response = await axios.post(`${BASE_URL}/user/courses/` + course._id, {}, {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        navigate(`/user/paymentsuccess?paymentID=${data.paymentID}&orderID=${data.orderID}`);
+        console.log(response.data);
+    }
+
+    const handleOpenRazorpay = (data) => {
+
+        const KEY_ID = import.meta.env.VITE_RAZORPAY_API_KEY
+        const options = {
+            key: KEY_ID,
+            amount: data.amount,
+            currency: data.currency,
+            order_id: data.id,
+            name: 'Online Course',
+            description: 'Purchase Course',
+            callback_url: `${BASE_URL}/user/verify`,
+            handler: function (response) {
+                console.log(response, 'handler: function');
+                axios.post(`${BASE_URL}/user/verify`, { response: response },
+                    {
+                        headers: {
+                            "Authorization": "Bearer " + localStorage.getItem("token")
+                        }
+                    })
+                    .then(res => {
+                        console.log('VERIFY FE', res);
+                        if (res.status === 200) {
+                            handlePaymentSuccess(res.data);
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            }
+        }
+        const razor = new window.Razorpay(options);
+        razor.open()
+    }
+
+    const handlePayment = async () => {
+
+        const _data = { amount: 10 }
+        await axios.post(`${BASE_URL}/user/orders`, _data, {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+            .then(res => {
+                console.log("ORDER DATA", res.data);
+                handleOpenRazorpay(res.data.order);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
 
     return <div>
 
@@ -101,15 +163,8 @@ function PurchaseCourse() {
                     variant="contained"
                     startIcon={<SellIcon />}
                     color='info'
-                    onClick={async () => {
-                        const response = await axios.post(`${BASE_URL}/user/courses/` + course._id, {}, {
-                            headers: {
-                                "Authorization": "Bearer " + localStorage.getItem("token")
-                            }
-                        })
-                        navigate("/user/showpurchased")
-                        console.log(response.data);
-                    }}>
+                    onClick={() => handlePayment()}
+                >
                     Purchase
                 </Button>
             }

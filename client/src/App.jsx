@@ -15,6 +15,7 @@ import './App.css';
 import PrivateRoutes from './utils/PrivateRoutes';
 import PageNotFound from './Components/PageNotFound';
 import Unauthorized from './Components/Unauthorized';
+import PaymentSuccess from './Components/PaymentSuccess';
 
 
 function App() {
@@ -32,12 +33,14 @@ function App() {
                         <Route path='/:role/editcourse/:courseId' element={<EditCourse />} />
                         <Route path='/:role/purchasecourse/:courseId' element={<PurchaseCourse />} />
                         <Route path='/:role/showpurchased' element={<ShowPurchased />} />
+                        <Route path='/:role/paymentsuccess' element={<PaymentSuccess />} />
                     </Route>
 
                     {/* should be public */}
                     <Route path='/' element={<Landing />} />
                     <Route path='/:role/signup' element={<Signup />} />
                     <Route path='/:role/signin' element={<Signin />} />
+
 
                     <Route path="*" element={<PageNotFound />} />
                     <Route path="/unauthorized" element={<Unauthorized />} />
