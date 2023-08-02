@@ -20,7 +20,7 @@ function Appbar() {
     const [currentUser, setCurrentUser] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const role = window.location.pathname.split("/")[1]
-    console.log(role);
+    // console.log(role);
 
     const [anchorElUser, setAnchorElUser] = useState(null);
 

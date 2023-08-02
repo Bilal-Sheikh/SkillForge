@@ -19,7 +19,7 @@ function ShowCoursesAdmin() {
             }
         }).then(res => {
             setCourses(res.data.courses);
-            console.log(res.data.courses);
+            // console.log(res.data.courses);
         });
     }, [])
 
@@ -29,7 +29,7 @@ function ShowCoursesAdmin() {
             return course.title.toLowerCase().includes(query.toLowerCase())
         })
     }, [courses, query])
-    console.log("FILTERED", filteredItems);
+    // console.log("FILTERED", filteredItems);
 
     if (courses.length === 0)
         return (

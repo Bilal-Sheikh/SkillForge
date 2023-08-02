@@ -27,7 +27,7 @@ function PurchaseCourse() {
             }
         }).then(res => {
             setCourse(res.data);
-            console.log(res.data);
+            // console.log(res.data);
         });
     }, [])
 
@@ -42,7 +42,7 @@ function PurchaseCourse() {
                 if (element._id === courseId) {
                     setIsPurchased(true);
                 }
-                console.log(element._id);
+                // console.log(element._id);
             })
         })
     }, [isPurchased])
@@ -55,7 +55,7 @@ function PurchaseCourse() {
             }
         })
         navigate(`/user/paymentsuccess?paymentID=${data.paymentID}&orderID=${data.orderID}`);
-        console.log(response.data);
+        // console.log(response.data);
     }
 
     const handleOpenRazorpay = (data) => {
@@ -70,7 +70,7 @@ function PurchaseCourse() {
             description: 'Purchase Course',
             callback_url: `${BASE_URL}/user/verify`,
             handler: function (response) {
-                console.log(response, 'handler: function');
+                // console.log(response, 'handler: function');
                 axios.post(`${BASE_URL}/user/verify`, { response: response },
                     {
                         headers: {
@@ -78,13 +78,13 @@ function PurchaseCourse() {
                         }
                     })
                     .then(res => {
-                        console.log('VERIFY FE', res);
+                        // console.log('VERIFY FE', res);
                         if (res.status === 200) {
                             handlePaymentSuccess(res.data);
                         }
                     })
                     .catch(err => {
-                        console.log(err);
+                        // console.log(err);
                     })
             }
         }
@@ -101,11 +101,11 @@ function PurchaseCourse() {
             }
         })
             .then(res => {
-                console.log("ORDER DATA", res.data);
+                // console.log("ORDER DATA", res.data);
                 handleOpenRazorpay(res.data.order);
             })
             .catch(err => {
-                console.log(err);
+                // console.log(err);
             });
     }
 

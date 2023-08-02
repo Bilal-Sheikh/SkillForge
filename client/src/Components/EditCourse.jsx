@@ -20,7 +20,7 @@ function EditCourse() {
             }
         }).then(res => {
             setCourse(res.data);
-            console.log(res.data);
+            // console.log(res.data);
         });
     }, [])
 
@@ -55,7 +55,7 @@ function EditCourse() {
                             }
                         })
                         navigate("/admin/menu")
-                        console.log(response.data);
+                        // console.log(response.data);
                     }}>
                     Delete
                 </Button>

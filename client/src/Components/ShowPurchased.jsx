@@ -15,7 +15,7 @@ function ShowPurchased() {
             }
         }).then(res => {
             setCourses(res.data.purchasedCourses);
-            console.log(res.data.purchasedCourses);
+            // console.log(res.data.purchasedCourses);
         });
     }, [])
 

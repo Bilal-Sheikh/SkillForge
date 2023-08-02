@@ -20,7 +20,7 @@ function ShowCoursesUser() {
         })
             .then((res) => {
                 setCourses(res.data.courses);
-                console.log(res.data.courses);
+                // console.log(res.data.courses);
             });
     }, []);
 
@@ -30,7 +30,7 @@ function ShowCoursesUser() {
             return course.title.toLowerCase().includes(query.toLowerCase())
         })
     }, [courses, query])
-    console.log("FILTERED", filteredItems);
+    // console.log("FILTERED", filteredItems);
 
 
     return <div>
