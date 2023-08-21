@@ -1,8 +1,8 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const adminRouter = require('./routes/admin');
-const userRouter = require('./routes/user');
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import adminRouter from './routes/admin';
+import userRouter from './routes/user';
 
 require('dotenv').config();
 
@@ -21,7 +21,7 @@ app.use('/admin', adminRouter);
 app.use('/user', userRouter);
 
 // Connect to MongoDB using the environment variable
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, dbName: "course-seller" })
+mongoose.connect(process.env.MONGODB_URI as string, { dbName: "course-seller" })
     .then(() => {
         console.log('Connected to MongoDB');
     })

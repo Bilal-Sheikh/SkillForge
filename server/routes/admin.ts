@@ -1,7 +1,7 @@
-const express = require('express');
-const { SECRET, authenticateAdminJwt } = require('../middleware/auth');
-const jwt = require('jsonwebtoken');
-const { Admin, Course } = require('../db');
+import express from 'express';
+import { SECRET, authenticateAdminJwt } from '../middleware/auth';
+import jwt from 'jsonwebtoken';
+import { Admin, Course } from '../db';
 
 const router = express.Router();
 
@@ -18,7 +18,7 @@ router.post('/signup', async (req, res) => {
 	} else {
 		const newAdmin = new Admin({ FirstName, LastName, email, password });
 		newAdmin.save();
-		const token = jwt.sign({ email, role: 'admin' }, SECRET, { expiresIn: '1h' });
+		const token = jwt.sign({ email, role: 'admin' }, SECRET as string, { expiresIn: '1h' });
 		res.json({ message: 'Admin created successfully', token });
 	}
 });
@@ -26,9 +26,9 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
 	const { email, password } = req.headers;
 	const admin = await Admin.findOne({ email, password })
-	
+
 	if (admin) {
-		const token = jwt.sign({ email, role: 'admin' }, SECRET, { expiresIn: '1h' });
+		const token = jwt.sign({ email, role: 'admin' }, SECRET as string, { expiresIn: '1h' });
 		res.json({ message: 'Logged in successfully', token });
 	} else {
 		res.status(403).json({ message: 'Invalid Admin credentials' });
@@ -36,21 +36,24 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/me', authenticateAdminJwt, async (req, res) => {
+	const email = req.headers["email"]
+	console.log("**TS**");
 	//find FirstName from the Admins collection
-	const FirstName = await Admin.findOne({ email: req.user.email }).select('FirstName -_id')
+	const FirstName = await Admin.findOne({ email: email }).select('FirstName -_id')
 	res.json(FirstName);
 })
 
 // create course
 router.post('/courses', authenticateAdminJwt, async (req, res) => {
 	//adding a new course to the courses collection
-	const course = new Course(req.body);	
-	const adminDetails = await Admin.findOne({ email: req.user.email }).select('_id FirstName LastName')
+	const email = req.headers["email"]
+	const course = new Course(req.body);
+	const adminDetails = await Admin.findOne({ email: email }).select('_id FirstName LastName')
 	course.publishedBy.push(adminDetails);
 	await course.save();
-	
-	await Admin.findOneAndUpdate({ email: req.user.email }, { $push: { createdCourses: course } })
-	
+
+	await Admin.findOneAndUpdate({ email: email }, { $push: { createdCourses: course } })
+
 	res.json({ message: 'Course created successfully', courseId: course.id });
 });
 
@@ -64,8 +67,15 @@ router.put('/courses/:courseId', authenticateAdminJwt, async (req, res) => {
 });
 
 router.get('/courses', authenticateAdminJwt, async (req, res) => {
-	const courses = await Admin.findOne({ email: req.user.email }).populate('createdCourses')
-	res.json({ courses: courses.createdCourses || [] })
+
+	const email = req.headers["email"]
+
+	const courses = await Admin.findOne({ email: email }).populate('createdCourses')
+	if (courses) {
+		res.json({ courses: courses.createdCourses || [] })
+	} else {
+		res.status(404).json({ message: 'no courses found' })
+	}
 });
 
 router.get('/courses/:courseId', authenticateAdminJwt, async (req, res) => {
@@ -78,9 +88,12 @@ router.get('/courses/:courseId', authenticateAdminJwt, async (req, res) => {
 });
 
 router.delete('/courses/:courseId', authenticateAdminJwt, async (req, res) => {
+
+	const email = req.headers["email"]
+
 	await Course.findByIdAndDelete(req.params.courseId)
-	await Admin.findOneAndUpdate({ email: req.user.email }, { $pull: { createdCourses: req.params.courseId } })
+	await Admin.findOneAndUpdate({ email: email }, { $pull: { createdCourses: req.params.courseId } })
 	res.json({ message: 'Course deleted successfully' })
 });
 
-module.exports = router;
+export default router

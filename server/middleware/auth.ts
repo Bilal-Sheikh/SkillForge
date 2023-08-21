@@ -1,20 +1,32 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from 'express';
+
 require('dotenv').config();
 // console.log('Loaded environment variables:', process.env.SECRET);
-const SECRET = process.env.SECRET;
+export const SECRET = process.env.SECRET;
 
 //JWT Admin Auth
-const authenticateAdminJwt = (req, res, next) => {
+export const authenticateAdminJwt = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
 
     if (authHeader) {
         const token = authHeader.split(' ')[1];
-        jwt.verify(token, SECRET, (err, user) => {
+
+        jwt.verify(token, SECRET as string, (err, user) => {
             if (err) {
                 return res.sendStatus(403);
             }
+
+            if (!user) {
+                return res.sendStatus(403);
+            }
+
+            if (typeof user === 'string') {
+                return res.sendStatus(403);
+            }
+
             if (user.role === 'admin') {
-                req.user = user;
+                req.headers["email"] = user.email
                 next();
             } else {
                 res.sendStatus(403);
@@ -26,17 +38,27 @@ const authenticateAdminJwt = (req, res, next) => {
 }
 
 //JWT User Auth
-const authenticateUserJwt = (req, res, next) => {
+export const authenticateUserJwt = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
 
     if (authHeader) {
         const token = authHeader.split(' ')[1];
-        jwt.verify(token, SECRET, (err, user) => {
+
+        jwt.verify(token, SECRET as string, (err, user) => {
             if (err) {
                 return res.sendStatus(403);
             }
+
+            if (!user) {
+                return res.sendStatus(403);
+            }
+
+            if (typeof user === 'string') {
+                return res.sendStatus(403);
+            }
+
             if (user.role === 'user') {
-                req.user = user;
+                req.headers["email"] = user.email
                 next();
             } else {
                 res.sendStatus(403);
@@ -45,10 +67,4 @@ const authenticateUserJwt = (req, res, next) => {
     } else {
         res.sendStatus(401);
     }
-}
-
-module.exports = {
-    authenticateAdminJwt,
-    authenticateUserJwt,
-    SECRET
 }
